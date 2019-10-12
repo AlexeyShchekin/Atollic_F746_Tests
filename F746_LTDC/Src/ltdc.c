@@ -282,8 +282,8 @@ void TFT_FillRectangle(uint16_t x1, uint16_t y1,
 
 void TFT_DrawPixel(uint16_t Xpos, uint16_t Ypos, uint32_t color)
 {
-   //*(__IO uint16_t*) (hltdc.LayerCfg[0].FBStartAdress + (2*(Ypos*hltdc.LayerCfg[0].ImageWidth + Xpos))) = (uint16_t)color;
-	*(__IO uint32_t*) (hltdc.LayerCfg[0].FBStartAdress + (4*(Ypos*hltdc.LayerCfg[0].ImageWidth + Xpos))) = color;
+   *(__IO uint16_t*) (hltdc.LayerCfg[0].FBStartAdress + (2*(Ypos*hltdc.LayerCfg[0].ImageWidth + Xpos))) = (uint16_t)color;
+	//*(__IO uint32_t*) (hltdc.LayerCfg[0].FBStartAdress + (4*(Ypos*hltdc.LayerCfg[0].ImageWidth + Xpos))) = color;
 }
 
 void TFT_DrawLine(uint16_t x1, uint16_t y1,
@@ -462,7 +462,8 @@ void TFT_DrawBitmap(uint32_t Xpos, uint32_t Ypos, uint8_t *pbmp)
 		for(index=0; index < height; index++)
 		{
 			hdma2d.Init.Mode = DMA2D_M2M_PFC;
-			hdma2d.Init.ColorMode = DMA2D_ARGB8888;
+			//hdma2d.Init.ColorMode = DMA2D_ARGB8888;
+			hdma2d.Init.ColorMode = DMA2D_RGB565;
 			hdma2d.Init.OutputOffset = 0;
 			hdma2d.LayerCfg[1].AlphaMode = DMA2D_NO_MODIF_ALPHA;
 			hdma2d.LayerCfg[1].InputAlpha = 0xFF;
@@ -487,14 +488,17 @@ void TFT_DrawBitmap(uint32_t Xpos, uint32_t Ypos, uint8_t *pbmp)
 		}
 	}
 	hdma2d.Init.Mode = DMA2D_M2M_BLEND;
-	hdma2d.Init.ColorMode = DMA2D_OUTPUT_ARGB8888;
+	//hdma2d.Init.ColorMode = DMA2D_OUTPUT_ARGB8888;
+	hdma2d.Init.ColorMode = DMA2D_OUTPUT_RGB565;
 	hdma2d.Init.OutputOffset = 0;
 	hdma2d.LayerCfg[1].InputOffset = 0;
-	hdma2d.LayerCfg[1].InputColorMode = DMA2D_INPUT_ARGB8888;
+	//hdma2d.LayerCfg[1].InputColorMode = DMA2D_INPUT_ARGB8888;
+	hdma2d.LayerCfg[1].InputColorMode = DMA2D_INPUT_RGB565;
 	hdma2d.LayerCfg[1].AlphaMode = DMA2D_REPLACE_ALPHA;
 	hdma2d.LayerCfg[1].InputAlpha = 0;
 	hdma2d.LayerCfg[0].InputOffset = 0;
-	hdma2d.LayerCfg[0].InputColorMode = DMA2D_INPUT_ARGB8888;
+	//hdma2d.LayerCfg[0].InputColorMode = DMA2D_INPUT_ARGB8888;
+	hdma2d.LayerCfg[0].InputColorMode = DMA2D_INPUT_RGB565;
 	hdma2d.LayerCfg[0].AlphaMode = DMA2D_REPLACE_ALPHA;
 	hdma2d.LayerCfg[0].InputAlpha = 0;
 	if(HAL_DMA2D_Init(&hdma2d) == HAL_OK)
@@ -535,7 +539,8 @@ void TFT_DrawBitmapToMem(uint32_t Xpos, uint32_t Ypos, uint8_t *pbmp, uint8_t *p
 		for(index=0; index < height; index++)
 		{
 			hdma2d.Init.Mode = DMA2D_M2M_PFC;
-			hdma2d.Init.ColorMode = DMA2D_ARGB8888;
+			//hdma2d.Init.ColorMode = DMA2D_ARGB8888;
+			hdma2d.Init.ColorMode = DMA2D_RGB565;
 			hdma2d.Init.OutputOffset = 0;
 			hdma2d.LayerCfg[1].AlphaMode = DMA2D_NO_MODIF_ALPHA;
 			hdma2d.LayerCfg[1].InputAlpha = 0xFF;
@@ -560,14 +565,17 @@ void TFT_DrawBitmapToMem(uint32_t Xpos, uint32_t Ypos, uint8_t *pbmp, uint8_t *p
 		}
 	}
 	hdma2d.Init.Mode = DMA2D_M2M_BLEND;
-	hdma2d.Init.ColorMode = DMA2D_OUTPUT_ARGB8888;
+	//hdma2d.Init.ColorMode = DMA2D_OUTPUT_ARGB8888;
+	hdma2d.Init.ColorMode = DMA2D_OUTPUT_RGB565;
 	hdma2d.Init.OutputOffset = 0;
 	hdma2d.LayerCfg[1].InputOffset = 0;
-	hdma2d.LayerCfg[1].InputColorMode = DMA2D_INPUT_ARGB8888;
+	//hdma2d.LayerCfg[1].InputColorMode = DMA2D_INPUT_ARGB8888;
+	hdma2d.LayerCfg[1].InputColorMode = DMA2D_INPUT_RGB565;
 	hdma2d.LayerCfg[1].AlphaMode = DMA2D_REPLACE_ALPHA;
 	hdma2d.LayerCfg[1].InputAlpha = 0;
 	hdma2d.LayerCfg[0].InputOffset = 0;
-	hdma2d.LayerCfg[0].InputColorMode = DMA2D_INPUT_ARGB8888;
+	//hdma2d.LayerCfg[0].InputColorMode = DMA2D_INPUT_ARGB8888;
+	hdma2d.LayerCfg[0].InputColorMode = DMA2D_INPUT_RGB565;
 	hdma2d.LayerCfg[0].AlphaMode = DMA2D_REPLACE_ALPHA;
 	hdma2d.LayerCfg[0].InputAlpha = 0;
 	if(HAL_DMA2D_Init(&hdma2d) == HAL_OK)

@@ -138,8 +138,27 @@ uint32_t OpenBMP(uint8_t *ptr, const char* fname)
 void BSP_CAMERA_FrameEventCallback(void)
 {
 	DMA2D_LayersAlphaReconfig(128,127);
-	HAL_DMA2D_BlendingStart_IT(&hdma2d, (uint32_t) dma2d_in1,(uint32_t) dma2d_in2,
-								LCD_FRAME_BUFFER, 480, 272);
+	//HAL_DMA2D_BlendingStart_IT(&hdma2d, (uint32_t) dma2d_in1,(uint32_t) dma2d_in2,
+	//							LCD_FRAME_BUFFER, 480, 272);
+
+	hdma2d.Init.Mode = DMA2D_M2M;
+	hdma2d.Init.ColorMode = DMA2D_RGB565;
+	hdma2d.Init.OutputOffset = 0;
+	hdma2d.LayerCfg[1].AlphaMode = DMA2D_REPLACE_ALPHA;
+	hdma2d.LayerCfg[1].InputAlpha = 0xFF;
+	hdma2d.LayerCfg[1].InputColorMode = DMA2D_INPUT_RGB565;
+	hdma2d.LayerCfg[1].InputOffset = 0;
+	if(HAL_DMA2D_Init(&hdma2d) == HAL_OK)
+	{
+		if(HAL_DMA2D_ConfigLayer(&hdma2d, 1) == HAL_OK)
+		{
+			HAL_DMA2D_Start_IT(&hdma2d, (uint32_t)dma2d_in1, (uint32_t)LCD_FRAME_BUFFER, 480, 272);
+			/*if (HAL_DMA2D_Start(&hdma2d, (uint32_t)dma2d_in1, (uint32_t)LCD_FRAME_BUFFER, 480, 272) == HAL_OK)
+			{
+				HAL_DMA2D_PollForTransfer(&hdma2d, 10);
+			}*/
+		}
+	}
 
 	HAL_UART_Transmit(&huart1,(uint8_t*)"Frame/n", 6, 1000);
 }
@@ -225,7 +244,12 @@ int main(void)
   //HAL_DCMI_Start_DMA(&hdcmi, DCMI_MODE_CONTINUOUS , (uint32_t)LCD_FRAME_BUFFER, Im_size);
   HAL_DCMI_Start_DMA(&hdcmi, DCMI_MODE_CONTINUOUS , (uint32_t)dma2d_in1, Im_size);
 
-  while(1);
+  while(1)
+  {
+	  HAL_Delay(5000);
+	  HAL_DCMI_Stop(&hdcmi);
+	  break;
+  }
   /* USER CODE END 2 */
 
   /* Infinite loop */
