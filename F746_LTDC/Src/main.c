@@ -76,7 +76,6 @@ ai_u16 batch_size = 1;
 ai_float pfData[AI_NETWORK_1_IN_1_SIZE];
 
 const char Result[] = {'0','1','2','3','4','5','6','7','8','9'};
-char Result_String[41];
 
 extern DCMI_HandleTypeDef hdcmi;
 extern UART_HandleTypeDef huart1;
@@ -118,6 +117,14 @@ ai_float ConvertRGB565_To_Float(uint16_t value)
 	return 1.0-(R+B+G)/3.0;
 }
 
+uint16_t ConvertFloat_To_RGB565(ai_float value)
+{
+	uint16_t R = (uint16_t)(value*31.0);
+	uint16_t B = (uint16_t)(value*31.0);
+	uint16_t G = (uint16_t)(value*63.0);
+	return (R<<11)|(G<<5)|B;
+}
+
 const uint16_t X_OFF = 114;
 const uint16_t Y_OFF = 9;
 const uint16_t WIDTH = 480;
@@ -144,7 +151,25 @@ void TakeCropFrame(void)
 				}
 				ind0 += WIDTH;
 			}
-			pfData[i*28 + j] = sum/243.0;
+			pfData[i*28 + j] = (sum/81.0 > 0.5) ? 1.0 : 0.0;
+		}
+	}
+}
+
+void PlaceCroppedFrame(void)
+{
+	for (int i=0;i<28;i++)
+	{
+		for (int j=0;j<28;j++)
+		{
+			*(dma2d_in2 + j*28 + i) = ConvertFloat_To_RGB565(pfData[i*28 + j]);
+		}
+	}
+	for (int i=0;i<28;i++)
+	{
+		for (int j=0;j<28;j++)
+		{
+			*(dma2d_in1 + i + 480*j) = *(dma2d_in2 + i + 28*j);
 		}
 	}
 }
@@ -205,6 +230,7 @@ void BSP_CAMERA_FrameEventCallback(void)
 	//							LCD_FRAME_BUFFER, 480, 272);
 
 	TakeCropFrame();
+	PlaceCroppedFrame();
 
 	hdma2d.Init.Mode = DMA2D_M2M;
 	hdma2d.Init.ColorMode = DMA2D_RGB565;
@@ -225,19 +251,17 @@ void BSP_CAMERA_FrameEventCallback(void)
 		}
 	}
 
+
 	MX_X_CUBE_AI_Process((const ai_float *)pfData, out_data, batch_size);
-	for(int i=0;i<10;i++)
-	{
-		sprintf(Result_String+4*i,"%2f ",out_data[i]);
-	}
-	Result_String[40] = '\n';
+
 	TFT_SetFont(&Font24);
 	TFT_SetTextColor(LCD_COLOR_CYAN);
 	TFT_SetBackColor(LCD_COLOR_BLACK);
 	int res = GetMaxResult(out_data, 10);
 	if (res!=-1)
-		TFT_DrawChar(10,10,Result[res]);
-	TFT_DisplayString(10,30,(uint8_t*)Result_String,LEFT_MODE);
+	{
+		TFT_DrawChar(10,100,Result[res]);
+	}
 
 	HAL_UART_Transmit(&huart1,(uint8_t*)"Frame/n", 6, 1000);
 }
