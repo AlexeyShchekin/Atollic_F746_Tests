@@ -105,8 +105,8 @@ int GetMaxResult(ai_float* out_data, int length)
 		}
 	}
 	return ind;
-	//if (max>0.7) return ind;
-	//else return -1;
+	if (max>0.95) return ind;
+	else return -1;
 }
 
 ai_float ConvertRGB565_To_Float(uint16_t value)
@@ -232,8 +232,8 @@ void BSP_CAMERA_FrameEventCallback(void)
 	TakeCropFrame();
 	PlaceCroppedFrame();
 
-	hdma2d.Init.Mode = DMA2D_M2M;
-	hdma2d.Init.ColorMode = DMA2D_RGB565;
+	hdma2d.Init.Mode = DMA2D_M2M_PFC;
+	hdma2d.Init.ColorMode = DMA2D_ARGB8888;
 	hdma2d.Init.OutputOffset = 0;
 	hdma2d.LayerCfg[1].AlphaMode = DMA2D_REPLACE_ALPHA;
 	hdma2d.LayerCfg[1].InputAlpha = 0xFF;
