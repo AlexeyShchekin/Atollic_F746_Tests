@@ -71,6 +71,13 @@ uint8_t* bmp1;
 uint8_t* dma2d_in1;
 uint8_t* dma2d_in2;
 
+ai_float out_data[AI_NETWORK_1_OUT_1_SIZE];
+ai_u16 batch_size = 1;
+ai_float pfData[AI_NETWORK_1_IN_1_SIZE];
+
+const char Result[] = {'0','1','2','3','4','5','6','7','8','9'};
+char Result_String[41];
+
 extern DCMI_HandleTypeDef hdcmi;
 extern UART_HandleTypeDef huart1;
 
@@ -85,6 +92,62 @@ static void MPU_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+int GetMaxResult(ai_float* out_data, int length)
+{
+	int ind = 0;
+	ai_float max = *out_data;
+	for (int i=1;i<length;i++)
+	{
+		if (*(out_data+i)>max)
+		{
+			max = *(out_data+i);
+			ind = i;
+		}
+	}
+	return ind;
+	//if (max>0.7) return ind;
+	//else return -1;
+}
+
+ai_float ConvertRGB565_To_Float(uint16_t value)
+{
+	ai_float R = ((ai_float)(((value&0xF800)>>11)&0x001F))/31.0;
+	ai_float G = ((ai_float)(((value&0x07E0)>>5)&0x003F))/63.0;
+	ai_float B = ((ai_float)(value&0x001F))/31.0;
+	return 1.0-(R+B+G)/3.0;
+}
+
+const uint16_t X_OFF = 114;
+const uint16_t Y_OFF = 9;
+const uint16_t WIDTH = 480;
+
+void TakeCropFrame(void)
+{
+	uint16_t X0 = X_OFF;
+	uint16_t Y0 = Y_OFF;
+	uint32_t ind0 = 0;
+	ai_float sum = 0.0;
+	for (int i=0;i<28;i++)
+	{
+		for (int j=0;j<28;j++)
+		{
+			X0 = X_OFF + 9*i;
+			Y0 = Y_OFF + 9*j;
+			ind0 = X0 + Y0 * WIDTH;
+			sum = 0.0;
+			for (int m=0;m<9;m++)
+			{
+				for (int k=0;k<9;k++)
+				{
+					sum += ConvertRGB565_To_Float(*((uint16_t*)dma2d_in1 + ind0 + m));
+				}
+				ind0 += WIDTH;
+			}
+			pfData[i*28 + j] = sum/243.0;
+		}
+	}
+}
 
 uint32_t OpenBMP(uint8_t *ptr, const char* fname)
 {
@@ -137,9 +200,11 @@ uint32_t OpenBMP(uint8_t *ptr, const char* fname)
 
 void BSP_CAMERA_FrameEventCallback(void)
 {
-	DMA2D_LayersAlphaReconfig(128,127);
+	//DMA2D_LayersAlphaReconfig(128,127);
 	//HAL_DMA2D_BlendingStart_IT(&hdma2d, (uint32_t) dma2d_in1,(uint32_t) dma2d_in2,
 	//							LCD_FRAME_BUFFER, 480, 272);
+
+	TakeCropFrame();
 
 	hdma2d.Init.Mode = DMA2D_M2M;
 	hdma2d.Init.ColorMode = DMA2D_RGB565;
@@ -159,6 +224,20 @@ void BSP_CAMERA_FrameEventCallback(void)
 			}*/
 		}
 	}
+
+	MX_X_CUBE_AI_Process((const ai_float *)pfData, out_data, batch_size);
+	for(int i=0;i<10;i++)
+	{
+		sprintf(Result_String+4*i,"%2f ",out_data[i]);
+	}
+	Result_String[40] = '\n';
+	TFT_SetFont(&Font24);
+	TFT_SetTextColor(LCD_COLOR_CYAN);
+	TFT_SetBackColor(LCD_COLOR_BLACK);
+	int res = GetMaxResult(out_data, 10);
+	if (res!=-1)
+		TFT_DrawChar(10,10,Result[res]);
+	TFT_DisplayString(10,30,(uint8_t*)Result_String,LEFT_MODE);
 
 	HAL_UART_Transmit(&huart1,(uint8_t*)"Frame/n", 6, 1000);
 }
@@ -246,7 +325,7 @@ int main(void)
 
   while(1)
   {
-	  HAL_Delay(5000);
+	  HAL_Delay(15000);
 	  HAL_DCMI_Stop(&hdcmi);
 	  break;
   }
