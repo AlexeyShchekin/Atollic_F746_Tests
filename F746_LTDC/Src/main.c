@@ -76,9 +76,13 @@ ai_u16 batch_size = 1;
 ai_float pfData[AI_NETWORK_1_IN_1_SIZE];
 
 const char Result[] = {'0','1','2','3','4','5','6','7','8','9'};
+char* Res = "Recognized: ";
 
 extern DCMI_HandleTypeDef hdcmi;
 extern UART_HandleTypeDef huart1;
+
+extern uint16_t X_SIZE;
+extern uint16_t Y_SIZE;
 
 /* USER CODE END PV */
 
@@ -105,7 +109,7 @@ int GetMaxResult(ai_float* out_data, int length)
 		}
 	}
 	return ind;
-	if (max>0.95) return ind;
+	if (max>0.98) return ind;
 	else return -1;
 }
 
@@ -151,7 +155,8 @@ void TakeCropFrame(void)
 				}
 				ind0 += WIDTH;
 			}
-			pfData[(27-i)*28 + j] = (sum/81.0 > 0.5) ? 1.0 : 0.0;
+			//pfData[(27-i)*28 + j] = (sum/81.0 > 0.5) ? 1.0 : 0.0;
+			pfData[j*28 + i] = (sum/81.0 > 0.5) ? 1.0 : 0.0;
 		}
 	}
 }
@@ -162,7 +167,7 @@ void PlaceCroppedFrame(void)
 	{
 		for (int j=0;j<28;j++)
 		{
-			*(dma2d_in2 + j*28 + i) = ConvertFloat_To_RGB565(pfData[i*28 + j]);
+			*(dma2d_in2 + j*28 + i) = ConvertFloat_To_RGB565(pfData[j*28 + i]);
 		}
 	}
 	for (int i=0;i<28;i++)
@@ -243,26 +248,30 @@ void BSP_CAMERA_FrameEventCallback(void)
 	{
 		if(HAL_DMA2D_ConfigLayer(&hdma2d, 1) == HAL_OK)
 		{
-			HAL_DMA2D_Start_IT(&hdma2d, (uint32_t)dma2d_in1, (uint32_t)LCD_FRAME_BUFFER, 480, 272);
-			/*if (HAL_DMA2D_Start(&hdma2d, (uint32_t)dma2d_in1, (uint32_t)LCD_FRAME_BUFFER, 480, 272) == HAL_OK)
+			//HAL_DMA2D_Start_IT(&hdma2d, (uint32_t)dma2d_in1, (uint32_t)LCD_FRAME_BUFFER, 480, 272);
+			if (HAL_DMA2D_Start(&hdma2d, (uint32_t)dma2d_in1, (uint32_t)LCD_FRAME_BUFFER, 480, 272) == HAL_OK)
 			{
-				HAL_DMA2D_PollForTransfer(&hdma2d, 10);
-			}*/
+				HAL_DMA2D_PollForTransfer(&hdma2d, 1);
+			}
 		}
 	}
-
 
 	MX_X_CUBE_AI_Process((const ai_float *)pfData, out_data, batch_size);
 
 	TFT_SetFont(&Font24);
-	TFT_SetTextColor(LCD_COLOR_CYAN);
+	TFT_SetTextColor(LCD_COLOR_GREEN);
 	TFT_SetBackColor(LCD_COLOR_BLACK);
 	int res = GetMaxResult(out_data, 10);
 	if (res!=-1)
 	{
-		TFT_DrawChar(10,100,Result[res]);
+		TFT_DisplayString(30,240,(uint8_t*)Res,LEFT_MODE);
+		TFT_DrawChar(230,240,Result[res]);
 	}
 
+	TFT_DrawLine(X_OFF,Y_OFF,X_OFF+262,Y_OFF,LCD_COLOR_ORANGE);
+	TFT_DrawLine(X_OFF,Y_OFF+262,X_OFF+262,Y_OFF+262,LCD_COLOR_ORANGE);
+	TFT_DrawLine(X_OFF,Y_OFF,X_OFF,Y_OFF+262,LCD_COLOR_ORANGE);
+	TFT_DrawLine(X_OFF+262,Y_OFF,X_OFF+262,Y_OFF+262,LCD_COLOR_ORANGE);
 	HAL_UART_Transmit(&huart1,(uint8_t*)"Frame/n", 6, 1000);
 }
 /* USER CODE END 0 */
@@ -280,6 +289,7 @@ int main(void)
 	bmp1 = (uint8_t *)0xC00FF000;
 	dma2d_in1 = (uint8_t *)0xC017E800;
 	dma2d_in2 = (uint8_t *)0xC01FE000;
+
   /* USER CODE END 1 */
   
   /* MPU Configuration--------------------------------------------------------*/
@@ -319,6 +329,7 @@ int main(void)
   MX_DMA2D_Init();
   MX_I2C1_Init();
   MX_CRC_Init();
+  MX_Core_Init();
   /* USER CODE BEGIN 2 */
   MT48LC4M32B2_init(&hsdram1);
   //HAL_LTDC_SetAddress(&hltdc, (uint32_t)&RGB565_480x272[0], 0);
@@ -350,7 +361,7 @@ int main(void)
 
   while(1)
   {
-	  HAL_Delay(15000);
+	  HAL_Delay(75000);
 	  HAL_DCMI_Stop(&hdcmi);
 	  break;
   }
