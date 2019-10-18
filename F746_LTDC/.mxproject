@@ -1,7 +1,7 @@
 [PreviousGenFiles]
-HeaderPath=D:/alexey/Atollic_F746_Tests/F746_LTDC/Inc
+HeaderPath=D:/Alexey/Atollic_F746_Tests/F746_LTDC/Inc
 HeaderFiles=gpio.h;ltdc.h;rng.h;stm32f7xx_it.h;stm32f7xx_hal_conf.h;main.h;fmc.h;ffconf.h;bsp_driver_sd.h;sd_diskio.h;fatfs.h;sdmmc.h;dma2d.h;dcmi.h;dma.h;i2c.h;usart.h;crc.h;app_x-cube-ai.h;constants_ai.h;bsp_ai.h;RTE_Components.h;
-SourcePath=D:/alexey/Atollic_F746_Tests/F746_LTDC/Src
+SourcePath=D:/Alexey/Atollic_F746_Tests/F746_LTDC/Src
 SourceFiles=gpio.c;ltdc.c;rng.c;stm32f7xx_it.c;stm32f7xx_hal_msp.c;main.c;fmc.c;bsp_driver_sd.c;sd_diskio.c;fatfs.c;sdmmc.c;dma2d.c;dcmi.c;dma.c;i2c.c;usart.c;crc.c;app_x-cube-ai.c;
 
 [PreviousLibFiles]

@@ -151,7 +151,7 @@ void TakeCropFrame(void)
 				}
 				ind0 += WIDTH;
 			}
-			pfData[i*28 + j] = (sum/81.0 > 0.5) ? 1.0 : 0.0;
+			pfData[(27-i)*28 + j] = (sum/81.0 > 0.5) ? 1.0 : 0.0;
 		}
 	}
 }
@@ -319,11 +319,12 @@ int main(void)
   MX_DMA2D_Init();
   MX_I2C1_Init();
   MX_CRC_Init();
-  MX_X_CUBE_AI_Init();
   /* USER CODE BEGIN 2 */
   MT48LC4M32B2_init(&hsdram1);
   //HAL_LTDC_SetAddress(&hltdc, (uint32_t)&RGB565_480x272[0], 0);
   HAL_LTDC_SetAddress(&hltdc,LCD_FRAME_BUFFER,0);
+
+  MX_X_CUBE_AI_Init();
 
   TFT_FillScreen(0xFF0000FF);
   HAL_Delay(1000);

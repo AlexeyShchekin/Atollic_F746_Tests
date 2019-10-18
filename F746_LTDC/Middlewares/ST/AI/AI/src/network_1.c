@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file    network_1.c
   * @author  AST Embedded Analytics Research Platform
-  * @date    Wed Oct 16 02:06:45 2019
+  * @date    Fri Oct 18 00:00:54 2019
   * @brief   AI Tool Automatic Code Generator for Embedded NN computing
   ******************************************************************************
   * @attention
@@ -46,14 +46,14 @@
 #define AI_NET_OBJ_INSTANCE g_network_1
  
 #undef AI_NETWORK_1_MODEL_SIGNATURE
-#define AI_NETWORK_1_MODEL_SIGNATURE     "5f949d3bd6a63bf5ed21386e74f8c24e"
+#define AI_NETWORK_1_MODEL_SIGNATURE     "06a182f1a11ce82c562878ee030141d8"
 
 #ifndef AI_TOOLS_REVISION_ID
 #define AI_TOOLS_REVISION_ID     "(rev-)"
 #endif
 
 #undef AI_TOOLS_DATE_TIME
-#define AI_TOOLS_DATE_TIME   "Wed Oct 16 02:06:45 2019"
+#define AI_TOOLS_DATE_TIME   "Fri Oct 18 00:00:54 2019"
 
 #undef AI_TOOLS_COMPILE_TIME
 #define AI_TOOLS_COMPILE_TIME    __DATE__ " " __TIME__
@@ -118,15 +118,15 @@ AI_ARRAY_OBJ_DECLARE(
   AI_STATIC)
 AI_ARRAY_OBJ_DECLARE(
   conv2d_1_output_array, AI_DATA_FORMAT_FLOAT, 
-  NULL, NULL, 2704,
+  NULL, NULL, 2304,
   AI_STATIC)
 AI_ARRAY_OBJ_DECLARE(
   conv2d_2_output_in_array, AI_DATA_FORMAT_FLOAT, 
-  NULL, NULL, 800,
+  NULL, NULL, 512,
   AI_STATIC)
 AI_ARRAY_OBJ_DECLARE(
   conv2d_2_output_out_array, AI_DATA_FORMAT_FLOAT, 
-  NULL, NULL, 800,
+  NULL, NULL, 512,
   AI_STATIC)
 AI_ARRAY_OBJ_DECLARE(
   dense_1_output_array, AI_DATA_FORMAT_FLOAT, 
@@ -155,20 +155,20 @@ AI_TENSOR_OBJ_DECLARE(
   AI_STATIC)
 AI_TENSOR_OBJ_DECLARE(
   conv2d_1_output,
-  AI_SHAPE_INIT(13, 13, 16, 1),
-  AI_STRIDE_INIT(832, 64, 4, 4),
+  AI_SHAPE_INIT(12, 12, 16, 1),
+  AI_STRIDE_INIT(768, 64, 4, 4),
   &conv2d_1_output_array,
   AI_STATIC)
 AI_TENSOR_OBJ_DECLARE(
   conv2d_2_output_in,
-  AI_SHAPE_INIT(5, 5, 32, 1),
-  AI_STRIDE_INIT(640, 128, 4, 4),
+  AI_SHAPE_INIT(4, 4, 32, 1),
+  AI_STRIDE_INIT(512, 128, 4, 4),
   &conv2d_2_output_in_array,
   AI_STATIC)
 AI_TENSOR_OBJ_DECLARE(
   conv2d_2_output_out,
-  AI_SHAPE_INIT(1, 1, 800, 1),
-  AI_STRIDE_INIT(3200, 3200, 4, 4),
+  AI_SHAPE_INIT(1, 1, 512, 1),
+  AI_STRIDE_INIT(2048, 2048, 4, 4),
   &conv2d_2_output_out_array,
   AI_STATIC)
 AI_TENSOR_OBJ_DECLARE(
@@ -206,13 +206,13 @@ AI_TENSOR_OBJ_DECLARE(
 /* Weight tensor #1 */
 AI_ARRAY_OBJ_DECLARE(
   conv2d_1_weights_array, AI_DATA_FORMAT_FLOAT, 
-  NULL, NULL, 144,
+  NULL, NULL, 400,
   AI_STATIC)
 
 AI_TENSOR_OBJ_DECLARE(
   conv2d_1_weights,
-  AI_SHAPE_INIT(16, 3, 3, 1),
-  AI_STRIDE_INIT(36, 12, 4, 4),
+  AI_SHAPE_INIT(16, 5, 5, 1),
+  AI_STRIDE_INIT(100, 20, 4, 4),
   &conv2d_1_weights_array,
   AI_STATIC)
 
@@ -261,13 +261,13 @@ AI_LAYER_OBJ_DECLARE(
 /* Weight tensor #1 */
 AI_ARRAY_OBJ_DECLARE(
   conv2d_2_weights_array, AI_DATA_FORMAT_FLOAT, 
-  NULL, NULL, 4608,
+  NULL, NULL, 12800,
   AI_STATIC)
 
 AI_TENSOR_OBJ_DECLARE(
   conv2d_2_weights,
-  AI_SHAPE_INIT(32, 3, 3, 16),
-  AI_STRIDE_INIT(576, 192, 64, 4),
+  AI_SHAPE_INIT(32, 5, 5, 16),
+  AI_STRIDE_INIT(1600, 320, 64, 4),
   &conv2d_2_weights_array,
   AI_STATIC)
 
@@ -316,13 +316,13 @@ AI_LAYER_OBJ_DECLARE(
 /* Weight tensor #1 */
 AI_ARRAY_OBJ_DECLARE(
   dense_1_weights_array, AI_DATA_FORMAT_FLOAT, 
-  NULL, NULL, 102400,
+  NULL, NULL, 65536,
   AI_STATIC)
 
 AI_TENSOR_OBJ_DECLARE(
   dense_1_weights,
-  AI_SHAPE_INIT(1, 1, 128, 800),
-  AI_STRIDE_INIT(409600, 409600, 3200, 4),
+  AI_SHAPE_INIT(1, 1, 128, 512),
+  AI_STRIDE_INIT(262144, 262144, 2048, 4),
   &dense_1_weights_array,
   AI_STATIC)
 
@@ -446,10 +446,10 @@ AI_LAYER_OBJ_DECLARE(
 AI_NETWORK_OBJ_DECLARE(
   AI_NET_OBJ_INSTANCE,
   AI_BUFFER_OBJ_INIT(AI_BUFFER_FORMAT_U8,
-                     1, 1, 434472, 1,
+                     1, 1, 320808, 1,
                      NULL),
   AI_BUFFER_OBJ_INIT(AI_BUFFER_FORMAT_U8,
-                     1, 1, 17284, 1,
+                     1, 1, 13380, 1,
                      NULL),
   &main_input_output, &main_output_nl_output,
   &conv2d_1_layer, 0)
@@ -471,10 +471,10 @@ ai_bool network_1_configure_activations(
   main_input_output_array.data_start = NULL;
   conv2d_1_output_array.data = activations + 0;
   conv2d_1_output_array.data_start = activations + 0;
-  conv2d_2_output_in_array.data = activations + 10880;
-  conv2d_2_output_in_array.data_start = activations + 10880;
-  conv2d_2_output_out_array.data = activations + 10880;
-  conv2d_2_output_out_array.data_start = activations + 10880;
+  conv2d_2_output_in_array.data = activations + 9280;
+  conv2d_2_output_in_array.data_start = activations + 9280;
+  conv2d_2_output_out_array.data = activations + 9280;
+  conv2d_2_output_out_array.data_start = activations + 9280;
   dense_1_output_array.data = activations + 0;
   dense_1_output_array.data_start = activations + 0;
   activation_3_output_array.data = activations + 0;
@@ -503,26 +503,26 @@ ai_bool network_1_configure_weights(
   conv2d_1_weights_array.data = weights + 0;
   conv2d_1_weights_array.data_start = weights + 0;
   conv2d_1_bias_array.format |= AI_FMT_FLAG_CONST;
-  conv2d_1_bias_array.data = weights + 576;
-  conv2d_1_bias_array.data_start = weights + 576;
+  conv2d_1_bias_array.data = weights + 1600;
+  conv2d_1_bias_array.data_start = weights + 1600;
   conv2d_2_weights_array.format |= AI_FMT_FLAG_CONST;
-  conv2d_2_weights_array.data = weights + 640;
-  conv2d_2_weights_array.data_start = weights + 640;
+  conv2d_2_weights_array.data = weights + 1664;
+  conv2d_2_weights_array.data_start = weights + 1664;
   conv2d_2_bias_array.format |= AI_FMT_FLAG_CONST;
-  conv2d_2_bias_array.data = weights + 19072;
-  conv2d_2_bias_array.data_start = weights + 19072;
+  conv2d_2_bias_array.data = weights + 52864;
+  conv2d_2_bias_array.data_start = weights + 52864;
   dense_1_weights_array.format |= AI_FMT_FLAG_CONST;
-  dense_1_weights_array.data = weights + 19200;
-  dense_1_weights_array.data_start = weights + 19200;
+  dense_1_weights_array.data = weights + 52992;
+  dense_1_weights_array.data_start = weights + 52992;
   dense_1_bias_array.format |= AI_FMT_FLAG_CONST;
-  dense_1_bias_array.data = weights + 428800;
-  dense_1_bias_array.data_start = weights + 428800;
+  dense_1_bias_array.data = weights + 315136;
+  dense_1_bias_array.data_start = weights + 315136;
   main_output_weights_array.format |= AI_FMT_FLAG_CONST;
-  main_output_weights_array.data = weights + 429312;
-  main_output_weights_array.data_start = weights + 429312;
+  main_output_weights_array.data = weights + 315648;
+  main_output_weights_array.data_start = weights + 315648;
   main_output_bias_array.format |= AI_FMT_FLAG_CONST;
-  main_output_bias_array.data = weights + 434432;
-  main_output_bias_array.data_start = weights + 434432;
+  main_output_bias_array.data = weights + 320768;
+  main_output_bias_array.data_start = weights + 320768;
   
   }
 
@@ -558,7 +558,7 @@ ai_bool ai_network_1_get_info(
       .api_version            = ai_platform_api_get_version(),
       .interface_api_version  = ai_platform_interface_api_get_version(),
       
-      .n_macc            = 787622,
+      .n_macc            = 1139270,
       .n_inputs          = AI_NETWORK_1_IN_NUM,
       .inputs            = AI_BUFFER_OBJ_INIT(
                               AI_BUFFER_FORMAT_FLOAT,
