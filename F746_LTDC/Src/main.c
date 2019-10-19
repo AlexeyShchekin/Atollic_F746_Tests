@@ -129,8 +129,19 @@ uint16_t ConvertFloat_To_RGB565(ai_float value)
 	return (R<<11)|(G<<5)|B;
 }
 
-const uint16_t X_OFF = 114;
+/*const uint16_t X_OFF = 114;
 const uint16_t Y_OFF = 9;
+const uint16_t STRIDE = 9;
+const uint16_t WIDTH = 480;*/
+
+/*const uint16_t X_OFF = 170;
+const uint16_t Y_OFF = 66;
+const uint16_t STRIDE = 5;
+const uint16_t WIDTH = 480;*/
+
+const uint16_t X_OFF = 198;
+const uint16_t Y_OFF = 94;
+const uint16_t STRIDE = 3;
 const uint16_t WIDTH = 480;
 
 void TakeCropFrame(void)
@@ -143,20 +154,20 @@ void TakeCropFrame(void)
 	{
 		for (int j=0;j<28;j++)
 		{
-			X0 = X_OFF + 9*i;
-			Y0 = Y_OFF + 9*j;
+			X0 = X_OFF + STRIDE*i;
+			Y0 = Y_OFF + STRIDE*j;
 			ind0 = X0 + Y0 * WIDTH;
 			sum = 0.0;
-			for (int m=0;m<9;m++)
+			for (int m=0;m<STRIDE;m++)
 			{
-				for (int k=0;k<9;k++)
+				for (int k=0;k<STRIDE;k++)
 				{
 					sum += ConvertRGB565_To_Float(*((uint16_t*)dma2d_in1 + ind0 + m));
 				}
 				ind0 += WIDTH;
 			}
-			//pfData[(27-i)*28 + j] = (sum/81.0 > 0.5) ? 1.0 : 0.0;
-			pfData[j*28 + i] = (sum/81.0 > 0.5) ? 1.0 : 0.0;
+			//pfData[(27-i)*28 + j] = (sum/(STRIDE*STRIDE) > 0.5) ? 1.0 : 0.0;
+			pfData[j*28 + i] = (sum/(STRIDE*STRIDE) > 0.5) ? 1.0 : 0.0;
 		}
 	}
 }
@@ -268,10 +279,10 @@ void BSP_CAMERA_FrameEventCallback(void)
 		TFT_DrawChar(230,240,Result[res]);
 	}
 
-	TFT_DrawLine(X_OFF,Y_OFF,X_OFF+262,Y_OFF,LCD_COLOR_ORANGE);
-	TFT_DrawLine(X_OFF,Y_OFF+262,X_OFF+262,Y_OFF+262,LCD_COLOR_ORANGE);
-	TFT_DrawLine(X_OFF,Y_OFF,X_OFF,Y_OFF+262,LCD_COLOR_ORANGE);
-	TFT_DrawLine(X_OFF+262,Y_OFF,X_OFF+262,Y_OFF+262,LCD_COLOR_ORANGE);
+	TFT_DrawLine(X_OFF,Y_OFF,X_OFF+28*STRIDE,Y_OFF,LCD_COLOR_ORANGE);
+	TFT_DrawLine(X_OFF,Y_OFF+28*STRIDE,X_OFF+28*STRIDE,Y_OFF+28*STRIDE,LCD_COLOR_ORANGE);
+	TFT_DrawLine(X_OFF,Y_OFF,X_OFF,Y_OFF+28*STRIDE,LCD_COLOR_ORANGE);
+	TFT_DrawLine(X_OFF+28*STRIDE,Y_OFF,X_OFF+28*STRIDE,Y_OFF+28*STRIDE,LCD_COLOR_ORANGE);
 	HAL_UART_Transmit(&huart1,(uint8_t*)"Frame/n", 6, 1000);
 }
 /* USER CODE END 0 */
