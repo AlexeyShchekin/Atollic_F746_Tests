@@ -342,7 +342,7 @@ void TFT_SetBackColor(uint32_t color)
  lcdprop.BackColor=color;
 }
 
-void TFT_DrawChar(uint16_t x, uint16_t y, const uint8_t c)
+void TFT_DrawChar(uint16_t x, uint16_t y, const uint8_t c, uint8_t isOpaque)
 {
 	uint32_t i = 0, j = 0;
 	uint16_t height, width;
@@ -377,7 +377,7 @@ void TFT_DrawChar(uint16_t x, uint16_t y, const uint8_t c)
 		  {
 		    TFT_DrawPixel((x + j), y, lcdprop.TextColor);
 		  }
-		  else
+		  else if (isOpaque==1)
 		  {
 		    TFT_DrawPixel((x + j), y, lcdprop.BackColor);
 		  }
@@ -386,7 +386,7 @@ void TFT_DrawChar(uint16_t x, uint16_t y, const uint8_t c)
 	}
 }
 
-void TFT_DisplayString(uint16_t Xpos, uint16_t Ypos, uint8_t *Text, Text_AlignModeTypdef Mode)
+void TFT_DisplayString(uint16_t Xpos, uint16_t Ypos, uint8_t *Text, Text_AlignModeTypdef Mode, uint8_t isOpaque)
 {
 	uint16_t ref_column = 1, i = 0;
 	uint32_t size = 0, xsize = 0;
@@ -424,7 +424,7 @@ void TFT_DisplayString(uint16_t Xpos, uint16_t Ypos, uint8_t *Text, Text_AlignMo
 	}
 	while ((*Text != 0) & (((X_SIZE - (i*lcdprop.pFont->Width)) & 0xFFFF) >= lcdprop.pFont->Width))
 	{
-	    TFT_DrawChar(ref_column, Ypos, *Text);
+	    TFT_DrawChar(ref_column, Ypos, *Text, isOpaque);
 	    ref_column += lcdprop.pFont->Width;
 	    Text++;
 	    i++;

@@ -76,7 +76,7 @@ ai_u16 batch_size = 1;
 ai_float pfData[AI_NETWORK_1_IN_1_SIZE];
 
 const char Result[] = {'0','1','2','3','4','5','6','7','8','9'};
-char* Res = "Recognized: ";
+char Res[12] = "Recognized:";
 
 extern DCMI_HandleTypeDef hdcmi;
 extern UART_HandleTypeDef huart1;
@@ -270,19 +270,25 @@ void BSP_CAMERA_FrameEventCallback(void)
 	MX_X_CUBE_AI_Process((const ai_float *)pfData, out_data, batch_size);
 
 	TFT_SetFont(&Font24);
-	TFT_SetTextColor(LCD_COLOR_GREEN);
+	TFT_SetTextColor(LCD_COLOR_BLUE);
 	TFT_SetBackColor(LCD_COLOR_BLACK);
 	int res = GetMaxResult(out_data, 10);
 	if (res!=-1)
 	{
-		TFT_DisplayString(30,240,(uint8_t*)Res,LEFT_MODE);
-		TFT_DrawChar(230,240,Result[res]);
+		TFT_DisplayString(30,240,(uint8_t*)Res,LEFT_MODE,0);
+		TFT_SetTextColor(LCD_COLOR_ORANGE);
+		TFT_DrawChar(230,240,Result[res],1);
 	}
 
-	TFT_DrawLine(X_OFF,Y_OFF,X_OFF+28*STRIDE,Y_OFF,LCD_COLOR_ORANGE);
-	TFT_DrawLine(X_OFF,Y_OFF+28*STRIDE,X_OFF+28*STRIDE,Y_OFF+28*STRIDE,LCD_COLOR_ORANGE);
-	TFT_DrawLine(X_OFF,Y_OFF,X_OFF,Y_OFF+28*STRIDE,LCD_COLOR_ORANGE);
-	TFT_DrawLine(X_OFF+28*STRIDE,Y_OFF,X_OFF+28*STRIDE,Y_OFF+28*STRIDE,LCD_COLOR_ORANGE);
+	TFT_DrawLine(X_OFF,Y_OFF,X_OFF+28*STRIDE,Y_OFF,LCD_COLOR_GREEN);
+	TFT_DrawLine(X_OFF-1,Y_OFF-1,X_OFF+28*STRIDE+1,Y_OFF-1,LCD_COLOR_GREEN);
+	TFT_DrawLine(X_OFF,Y_OFF+28*STRIDE,X_OFF+28*STRIDE,Y_OFF+28*STRIDE,LCD_COLOR_GREEN);
+	TFT_DrawLine(X_OFF-1,Y_OFF+28*STRIDE+1,X_OFF+28*STRIDE+1,Y_OFF+28*STRIDE+1,LCD_COLOR_GREEN);
+	TFT_DrawLine(X_OFF,Y_OFF,X_OFF,Y_OFF+28*STRIDE,LCD_COLOR_GREEN);
+	TFT_DrawLine(X_OFF-1,Y_OFF-1,X_OFF-1,Y_OFF+28*STRIDE+1,LCD_COLOR_GREEN);
+	TFT_DrawLine(X_OFF+28*STRIDE,Y_OFF,X_OFF+28*STRIDE,Y_OFF+28*STRIDE,LCD_COLOR_GREEN);
+	TFT_DrawLine(X_OFF+28*STRIDE+1,Y_OFF-1,X_OFF+28*STRIDE+1,Y_OFF+28*STRIDE+1,LCD_COLOR_GREEN);
+
 	HAL_UART_Transmit(&huart1,(uint8_t*)"Frame/n", 6, 1000);
 }
 /* USER CODE END 0 */
@@ -388,55 +394,15 @@ int main(void)
     /* USER CODE BEGIN 3 */
 	 TFT_FillScreen(LCD_COLOR_BLACK);
 	 TFT_SetFont(&Font24);
-	 TFT_SetTextColor(LCD_COLOR_YELLOW);
-	 TFT_SetBackColor(LCD_COLOR_BLUE);
-	 TFT_DrawChar(10, 10, (uint8_t)'S');
-	 TFT_DrawChar(27, 10, (uint8_t)'t');
-	 TFT_DrawChar(44, 10, (uint8_t)'m');
-	 TFT_DrawChar(61, 10, (uint8_t)'3');
-	 TFT_DrawChar(78, 10, (uint8_t)'2');
-	 TFT_SetTextColor(LCD_COLOR_GREEN);
-	 TFT_SetBackColor(LCD_COLOR_RED);
-	 TFT_SetFont(&Font20);
-	 TFT_DrawChar(10, 34, (uint8_t)'S');
-	 TFT_DrawChar(24, 34, (uint8_t)'t');
-	 TFT_DrawChar(38, 34, (uint8_t)'m');
-	 TFT_DrawChar(52, 34, (uint8_t)'3');
-	 TFT_DrawChar(66, 34, (uint8_t)'2');
-	 TFT_SetTextColor(LCD_COLOR_BLUE);
-	 TFT_SetBackColor(LCD_COLOR_YELLOW);
-	 TFT_SetFont(&Font16);
-	 TFT_DrawChar(10, 54, (uint8_t)'S');
-	 TFT_DrawChar(21, 54, (uint8_t)'t');
-	 TFT_DrawChar(32, 54, (uint8_t)'m');
-	 TFT_DrawChar(43, 54, (uint8_t)'3');
-	 TFT_DrawChar(54, 54, (uint8_t)'2');
-	 TFT_SetFont(&Font12);
 	 TFT_SetTextColor(LCD_COLOR_CYAN);
 	 TFT_SetBackColor(LCD_COLOR_BLACK);
-	 TFT_DrawChar(10, 70, (uint8_t)'S');
-	 TFT_DrawChar(17, 70, (uint8_t)'t');
-	 TFT_DrawChar(24, 70, (uint8_t)'m');
-	 TFT_DrawChar(31, 70, (uint8_t)'3');
-	 TFT_DrawChar(38, 70, (uint8_t)'2');
-	 TFT_SetFont(&Font8);
-	 TFT_SetTextColor(LCD_COLOR_RED);
-	 TFT_SetBackColor(LCD_COLOR_GREEN);
-	 TFT_DrawChar(10, 82, (uint8_t)'S');
-	 TFT_DrawChar(15, 82, (uint8_t)'t');
-	 TFT_DrawChar(20, 82, (uint8_t)'m');
-	 TFT_DrawChar(25, 82, (uint8_t)'3');
-	 TFT_DrawChar(30, 82, (uint8_t)'2');
-	 TFT_SetFont(&Font24);
-	 TFT_SetTextColor(LCD_COLOR_CYAN);
-	 TFT_SetBackColor(LCD_COLOR_BLACK);
-	 TFT_DisplayString(14, 100, (uint8_t *)"STM32 Left 24", LEFT_MODE);
+	 TFT_DisplayString(14, 100, (uint8_t *)"STM32 Left 24", LEFT_MODE,1);
 	 TFT_SetFont(&Font20);
 	 TFT_SetTextColor(LCD_COLOR_RED);
-	 TFT_DisplayString(14, 130, (uint8_t *)"STM32 Center 20", CENTER_MODE);
+	 TFT_DisplayString(14, 130, (uint8_t *)"STM32 Center 20", CENTER_MODE,1);
 	 TFT_SetFont(&Font16);
 	 TFT_SetTextColor(LCD_COLOR_MAGENTA);
-	 TFT_DisplayString(14, 160, (uint8_t *)"STM32 Right 16", RIGHT_MODE);
+	 TFT_DisplayString(14, 160, (uint8_t *)"STM32 Right 16", RIGHT_MODE,1);
 	 HAL_Delay(5000);
 
 	  for(j=1;j<=6;j++)
